@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://81pco8senlsm"
+path="res://.godot/imported/determination.ogg-b59fa829fb8e30ffc07979b73e4257ae.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/sprites/Legacy Collection/Assets/Packs/Meta data assets files/sounds/music/determination.ogg"
+dest_files=["res://.godot/imported/determination.ogg-b59fa829fb8e30ffc07979b73e4257ae.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://c38tgrptq35be"]
+
+[ext_resource type="Script" uid="uid://c2vq8t1xqvhu" path="res://scenes/score_ui.gd" id="1_ahhtf"]
+
+[node name="hud" type="CanvasLayer"]
+
+[node name="ScoreUI" type="Control" parent="."]
+layout_mode = 3
+anchor_left = -0.043
+anchor_top = -0.078
+anchor_right = 0.016
+anchor_bottom = -0.04
+offset_left = 5.536
+offset_top = -22.456
+offset_right = 0.567999
+offset_bottom = -0.079998
+script = ExtResource("1_ahhtf")
+
+[node name="flowmentumBar" type="ProgressBar" parent="ScoreUI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.698
+anchor_top = 1.611
+anchor_right = 6.206
+anchor_bottom = 3.043
+offset_left = 0.026001
+offset_top = -3.717
+offset_right = 0.0219727
+offset_bottom = -0.0210114
+step = 1.0

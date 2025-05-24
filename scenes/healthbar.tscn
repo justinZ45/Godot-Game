@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://bvcosn5e0tjb3"]
+
+[ext_resource type="Script" uid="uid://bwqympujllwnx" path="res://scripts/healthbar.gd" id="1_8wl12"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8wl12"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vjxg4"]
+bg_color = Color(0.126415, 0.708422, 0.448649, 1)
+
+[node name="healthbar" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 5.0
+offset_top = -9.0
+offset_right = 5.0
+offset_bottom = -9.0
+rotation = -1.54673
+script = ExtResource("1_8wl12")
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+layout_mode = 0
+offset_left = 1.0
+offset_top = -1.0
+offset_right = 5.0
+offset_bottom = 24.0
+rotation = -0.0233929
+theme_override_styles/background = SubResource("StyleBoxEmpty_8wl12")
+theme_override_styles/fill = SubResource("StyleBoxFlat_vjxg4")
+rounded = true
+fill_mode = 2
+show_percentage = false

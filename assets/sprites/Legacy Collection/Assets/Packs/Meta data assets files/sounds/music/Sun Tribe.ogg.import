@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://qcnpo1aputv"
+path="res://.godot/imported/Sun Tribe.ogg-cd2be0c32fee0fe08c280474f5dafcf8.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/sprites/Legacy Collection/Assets/Packs/Meta data assets files/sounds/music/Sun Tribe.ogg"
+dest_files=["res://.godot/imported/Sun Tribe.ogg-cd2be0c32fee0fe08c280474f5dafcf8.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
