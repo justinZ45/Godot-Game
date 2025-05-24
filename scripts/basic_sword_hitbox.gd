@@ -20,9 +20,10 @@ func _on_body_entered(body):
 
 	if body.has_method("apply_hit"):
 		var hit_effect = current_attack.get("hit_effect", {})
+		var attack_score = current_attack.get("attack_score", 1)
 		var damage = current_attack.get ("damage", {})
 		damage = current_attack.get("damage", 1)
-		body.apply_hit(hit_effect, damage, global_position)
+		body.apply_hit(hit_effect, damage, attack_score, global_position)
 		hit_effect_anim.play("hit")
 		
 

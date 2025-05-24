@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://c38tgrptq35be"]
+[gd_scene load_steps=3 format=3 uid="uid://c38tgrptq35be"]
 
-[ext_resource type="Script" uid="uid://c2vq8t1xqvhu" path="res://scenes/score_ui.gd" id="1_ahhtf"]
+[ext_resource type="Script" uid="uid://c2vq8t1xqvhu" path="res://scripts/score_ui.gd" id="1_ahhtf"]
+[ext_resource type="Script" uid="uid://du5lpa4rqklai" path="res://scripts/timer_ui.gd" id="2_oo0fn"]
 
 [node name="hud" type="CanvasLayer"]
 
@@ -28,3 +29,24 @@ offset_top = -3.717
 offset_right = 0.0219727
 offset_bottom = -0.0210114
 step = 1.0
+
+[node name="TimerUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_oo0fn")
+
+[node name="game_timer" type="Timer" parent="TimerUI"]
+wait_time = 1.08
+one_shot = true
+autostart = true
+
+[node name="timer_label" type="Label" parent="TimerUI"]
+layout_mode = 0
+offset_left = 980.0
+offset_top = 1.0
+offset_right = 1153.0
+offset_bottom = 83.0
+theme_override_colors/font_color = Color(0.47451, 0, 0, 1)
+theme_override_font_sizes/font_size = 40

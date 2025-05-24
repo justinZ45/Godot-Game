@@ -12,6 +12,7 @@ var direction: int = -1
 var SPEED: float = 50.0
 
 var BASE_SPEED = 50
+var score = 0
 
 var knockback_velocity: Vector2 = Vector2.ZERO
 var knockback_decay: float = 2000.0  # Higher = faster knockback decay
@@ -62,12 +63,12 @@ func _on_timer_timeout():
 	direction *= -1
 	animated_sprite.flip_h = direction > 0
 
-func take_damage(amount: int, hit_effect: Dictionary = {}, attacker_position: Vector2 = Vector2.ZERO):
+func take_damage(amount: int, attack_score:int, hit_effect: Dictionary = {},  attacker_position: Vector2 = Vector2.ZERO):
 	is_hit = true   # **New:** Set flag to indicate that the character is hit
 	hit_cooldown_timer = hit_effect["enemy_stun"]  # **New:** Start cooldown after hit
 	SPEED = 0  # **New:** Stop movement temporarily during damage
 
-	
+	score = attack_score
 	current_health -= amount
 	healthbar.set_health(current_health)
 	effect_manager.flash(animated_sprite, Color.WHITE, 0.2)
@@ -80,6 +81,8 @@ func take_damage(amount: int, hit_effect: Dictionary = {}, attacker_position: Ve
 		else:
 			knockback.x = -abs(knockback.x)
 		knockback_velocity = knockback
+	
+	GameManager.add_score(score)
 
 	if hit_effect.has("hit_stop"):
 		get_tree().paused = true
@@ -95,8 +98,8 @@ func take_damage(amount: int, hit_effect: Dictionary = {}, attacker_position: Ve
 
 		die()
 
-func apply_hit(hit_effect: Dictionary, damage: int, attacker_position: Vector2 = Vector2.ZERO):
-	take_damage(damage, hit_effect, attacker_position)
+func apply_hit(hit_effect: Dictionary, damage: int, attack_score: int, attacker_position: Vector2 = Vector2.ZERO):
+	take_damage(damage, attack_score, hit_effect,  attacker_position)
 
 func die():
 	queue_free()

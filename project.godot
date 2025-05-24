@@ -17,7 +17,7 @@ config/features=PackedStringArray("4.4", "Forward Plus")
 [autoload]
 
 effect_manager="*res://scripts/effect_manager.gd"
-GameManager="*res://scenes/game_manager.gd"
+GameManager="*res://scripts/game_manager.gd"
 Hud="*res://scenes/hud.tscn"
 
 [input]

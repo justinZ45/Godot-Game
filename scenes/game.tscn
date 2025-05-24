@@ -1,6 +1,6 @@
 [gd_scene load_steps=15 format=4 uid="uid://f1vdsjuqcxu3"]
 
-[ext_resource type="Script" uid="uid://cccdion4ds0yq" path="res://scenes/game_manager.gd" id="1_0tnpc"]
+[ext_resource type="Script" uid="uid://cccdion4ds0yq" path="res://scripts/game_manager.gd" id="1_0tnpc"]
 [ext_resource type="Texture2D" uid="uid://chl6guu7x46l1" path="res://assets/sprites/Sunny Land Collection Files/Assets/Environments/SunnyLand/Layers/tileset.png" id="1_p57ef"]
 [ext_resource type="PackedScene" uid="uid://6o55hy0wr55b" path="res://scenes/player.tscn" id="1_uwrxv"]
 [ext_resource type="Texture2D" uid="uid://brex5h15uy8ci" path="res://assets/sprites/Sunny Land Collection Files/Assets/Environments/SunnyLand/Layers/back.png" id="2_u5sy4"]

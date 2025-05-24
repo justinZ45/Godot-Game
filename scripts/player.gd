@@ -95,6 +95,7 @@ var attack_configs = {
 		"hitbox_on": 0,
 		"hitbox_off": 3,
 		"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
+		"attack_score": 1,
 		"damage": 2,
 		"hit_effect": {
 			"knockback": Vector2(-60, -70),
@@ -108,7 +109,8 @@ var attack_configs = {
 		"hitbox_off": 5,
 		"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
 		"next": "basic_attack_2",
-		"move_speed": 20,  
+		"move_speed": 20,
+		"attack_score": 2,  
 		"damage": 2,
 		"hit_effect": {
 			"knockback": Vector2(5, 0),
@@ -123,6 +125,7 @@ var attack_configs = {
 		"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
 		"next": "basic_attack_3",
 		"move_speed": 20,  
+		"attack_score": 2,
 		"damage": 3,
 		"hit_effect": {
 			"knockback": Vector2(5, 0),
@@ -136,6 +139,7 @@ var attack_configs = {
 		"hitbox_off": 4,
 		"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
 		"move_speed": 40,  
+		"attack_score": 3,
 		"damage": 5,
 		"hit_effect": {
 			"knockback": Vector2(60, -50),
@@ -150,6 +154,7 @@ var attack_configs = {
 		"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
 		"next": "basic_aerial_2",
 		"move_speed": 20,  
+		"attack_score": 2,
 		"damage": 2,
 		"hit_effect": {
 			"knockback": Vector2(8, -115),
@@ -163,7 +168,8 @@ var attack_configs = {
 		"hitbox_off": 3,
 		"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
 		"next": "basic_aerial_3",
-		"move_speed": 20,  
+		"move_speed": 20, 
+		"attack_score": 2, 
 		"damage": 3,
 		"hit_effect": {
 			"knockback": Vector2(5, -100),
@@ -177,6 +183,7 @@ var attack_configs = {
 		"hitbox_off": 5,
 		"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
 		"move_speed": 20,  
+		"attack_score": 3,
 		"damage":5,
 		"hit_effect": {
 			"knockback": Vector2(60, -50),
@@ -189,6 +196,7 @@ var attack_configs = {
 	"hitbox_on": 2,
 	"hitbox_off": 5,
 	"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
+	"attack_score": 5,
 	"damage": 7,
 	"move_speed": 20,
 	"hit_effect": {
