@@ -3,7 +3,6 @@ extends Control
 @onready var flowmentum_bar: ProgressBar = $flowmentumBar
 
 func _ready():
-	print("Bar script ready")
 	GameManager.score_updated.connect(_on_score_updated)
 	flowmentum_bar.value = GameManager.score
 

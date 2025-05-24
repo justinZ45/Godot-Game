@@ -826,7 +826,7 @@ position = Vector2(16, -39)
 
 [node name="Camera2D" type="Camera2D" parent="TileMap/Player"]
 position = Vector2(-13, -13)
-zoom = Vector2(3, 3)
+zoom = Vector2(6, 6)
 limit_bottom = 90
 limit_smoothed = true
 position_smoothing_enabled = true

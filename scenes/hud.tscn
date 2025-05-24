@@ -1,20 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://c38tgrptq35be"]
+[gd_scene load_steps=4 format=3 uid="uid://c38tgrptq35be"]
 
 [ext_resource type="Script" uid="uid://c2vq8t1xqvhu" path="res://scripts/score_ui.gd" id="1_ahhtf"]
 [ext_resource type="Script" uid="uid://du5lpa4rqklai" path="res://scripts/timer_ui.gd" id="2_oo0fn"]
+[ext_resource type="Script" uid="uid://qbiibavychop" path="res://scripts/control.gd" id="3_5ysmq"]
 
 [node name="hud" type="CanvasLayer"]
 
 [node name="ScoreUI" type="Control" parent="."]
 layout_mode = 3
-anchor_left = -0.043
-anchor_top = -0.078
-anchor_right = 0.016
-anchor_bottom = -0.04
-offset_left = 5.536
-offset_top = -22.456
-offset_right = 0.567999
-offset_bottom = -0.079998
+anchor_right = 0.058
+anchor_bottom = 0.023
+offset_bottom = 18.0
 script = ExtResource("1_ahhtf")
 
 [node name="flowmentumBar" type="ProgressBar" parent="ScoreUI"]
@@ -28,13 +24,18 @@ offset_left = 0.026001
 offset_top = -3.717
 offset_right = 0.0219727
 offset_bottom = -0.0210114
+theme_override_font_sizes/font_size = 40
 step = 1.0
+show_percentage = false
 
 [node name="TimerUI" type="Control" parent="."]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
+anchor_left = 0.303
+anchor_right = 0.5
+offset_left = 20.0
+offset_right = 20.0
 offset_bottom = 40.0
+grow_horizontal = 2
 script = ExtResource("2_oo0fn")
 
 [node name="game_timer" type="Timer" parent="TimerUI"]
@@ -44,9 +45,33 @@ autostart = true
 
 [node name="timer_label" type="Label" parent="TimerUI"]
 layout_mode = 0
-offset_left = 980.0
-offset_top = 1.0
-offset_right = 1153.0
-offset_bottom = 83.0
+offset_left = 504.0
+offset_top = 2.0
+offset_right = 677.0
+offset_bottom = 84.0
 theme_override_colors/font_color = Color(0.47451, 0, 0, 1)
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 120
+
+[node name="ComboUI" type="Control" parent="."]
+layout_mode = 3
+anchor_left = 0.483
+anchor_top = 0.023
+anchor_right = 1.0
+anchor_bottom = 0.117
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+script = ExtResource("3_5ysmq")
+
+[node name="combo_timer" type="Timer" parent="ComboUI"]
+
+[node name="combo_label" type="Label" parent="ComboUI"]
+layout_mode = 0
+offset_left = 888.0
+offset_top = 1.0
+offset_right = 1152.0
+offset_bottom = 79.0
+theme_override_colors/font_color = Color(0.501961, 0.235294, 0, 1)
+theme_override_font_sizes/font_size = 100
+
+[connection signal="timeout" from="ComboUI/combo_timer" to="ComboUI" method="_on_combo_timer_timeout"]

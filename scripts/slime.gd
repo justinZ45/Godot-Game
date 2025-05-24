@@ -4,6 +4,7 @@ extends CharacterBody2D
 @onready var timer: Timer = $Timer
 @onready var healthbar: Control = $healthbar
 @onready var shader_mat := animated_sprite.material as ShaderMaterial
+@onready var slime_hitbox: CollisionShape2D = $slime_hitbox
 
 @export var max_health: int = 15
 var current_health: int = max_health
@@ -20,6 +21,10 @@ var knockback_decay: float = 2000.0  # Higher = faster knockback decay
 # New hit cooldown variables
 var is_hit: bool = false   # **New:** Flag to track if the character is in cooldown after hit
 var hit_cooldown_timer: float = 0.0 # **New:** Timer to track the cooldown duration
+
+enum States { ALIVE, DEAD}
+var state: States = States.ALIVE
+
 
 func _ready():
 	timer.timeout.connect(_on_timer_timeout)
@@ -72,6 +77,7 @@ func take_damage(amount: int, attack_score:int, hit_effect: Dictionary = {},  at
 	current_health -= amount
 	healthbar.set_health(current_health)
 	effect_manager.flash(animated_sprite, Color.WHITE, 0.2)
+	
 
 	if hit_effect.has("knockback"):
 		var knockback: Vector2 = hit_effect["knockback"]
@@ -81,7 +87,8 @@ func take_damage(amount: int, attack_score:int, hit_effect: Dictionary = {},  at
 		else:
 			knockback.x = -abs(knockback.x)
 		knockback_velocity = knockback
-	
+		
+	GameManager.add_combo_hit()
 	GameManager.add_score(score)
 
 	if hit_effect.has("hit_stop"):
@@ -90,7 +97,12 @@ func take_damage(amount: int, attack_score:int, hit_effect: Dictionary = {},  at
 		get_tree().paused = false
 
 	if current_health <= 0:
+		state = States.DEAD
 		velocity = Vector2.ZERO
+		
+		score = 5
+		GameManager.add_score(score)
+
 
 		knockback_velocity = Vector2.ZERO
 		animated_sprite.play("death")
