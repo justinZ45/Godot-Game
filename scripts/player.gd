@@ -13,7 +13,15 @@ var direction: int = 0
 var original_collision_mask: int = 0
 var is_invulnerable: bool = false
 
+@export var damage_knockback_force: Vector2 = Vector2(170, -200)
+@export var invincibility_time: float = .5
 
+var is_invincible = false
+var flowmentum_active = false
+
+
+@onready var animation_player = $AnimationPlayer
+@onready var hit_invincible_timer: Timer = $timers/hit_invincible_timer
 
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
@@ -33,7 +41,7 @@ var is_invulnerable: bool = false
 
 enum States { IDLE, RUNNING, JUMPING, MIDAIR, FALLING, ATTACKING, 
 CROUCHED, SLIDING, GRABBING,
- AIR_DASHING, ROLLING, WALL_SLIDE, CHARGED }
+ AIR_DASHING, ROLLING, WALL_SLIDE, CHARGED, HURT }
 
 var state: States = States.IDLE
 
@@ -95,7 +103,7 @@ var attack_configs = {
 		"hitbox_on": 0,
 		"hitbox_off": 3,
 		"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
-		"attack_score": 1,
+		"attack_momentum": 1,
 		"damage": 2,
 		"hit_effect": {
 			"knockback": Vector2(-60, -70),
@@ -110,10 +118,10 @@ var attack_configs = {
 		"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
 		"next": "basic_attack_2",
 		"move_speed": 20,
-		"attack_score": 2,  
+		"attack_momentum": 2,  
 		"damage": 2,
 		"hit_effect": {
-			"knockback": Vector2(5, 0),
+			"knockback": Vector2(170, 0),
 			"hit_stop": 0.07,
 			"enemy_stun":  1.0
 		}
@@ -125,10 +133,10 @@ var attack_configs = {
 		"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
 		"next": "basic_attack_3",
 		"move_speed": 20,  
-		"attack_score": 2,
+		"attack_momentum": 2,
 		"damage": 3,
 		"hit_effect": {
-			"knockback": Vector2(5, 0),
+			"knockback": Vector2(170, 0),
 			"hit_stop": 0.07,
 			"enemy_stun": 1.0
 		}
@@ -139,7 +147,7 @@ var attack_configs = {
 		"hitbox_off": 4,
 		"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
 		"move_speed": 40,  
-		"attack_score": 3,
+		"attack_momentum": 3,
 		"damage": 5,
 		"hit_effect": {
 			"knockback": Vector2(60, -50),
@@ -154,7 +162,7 @@ var attack_configs = {
 		"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
 		"next": "basic_aerial_2",
 		"move_speed": 20,  
-		"attack_score": 2,
+		"attack_momentum": 2,
 		"damage": 2,
 		"hit_effect": {
 			"knockback": Vector2(8, -115),
@@ -169,7 +177,7 @@ var attack_configs = {
 		"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
 		"next": "basic_aerial_3",
 		"move_speed": 20, 
-		"attack_score": 2, 
+		"attack_momentum": 2, 
 		"damage": 3,
 		"hit_effect": {
 			"knockback": Vector2(5, -100),
@@ -183,7 +191,7 @@ var attack_configs = {
 		"hitbox_off": 5,
 		"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
 		"move_speed": 20,  
-		"attack_score": 3,
+		"attack_momentum": 3,
 		"damage":5,
 		"hit_effect": {
 			"knockback": Vector2(60, -50),
@@ -196,7 +204,7 @@ var attack_configs = {
 	"hitbox_on": 2,
 	"hitbox_off": 5,
 	"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
-	"attack_score": 5,
+	"attack_momentum": 5,
 	"damage": 7,
 	"move_speed": 20,
 	"hit_effect": {
@@ -218,7 +226,12 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_check_ledge_grab()
-	
+	if GameManager.momentum >= 50 and not flowmentum_active:
+		_on_flowmentum_mode_started()
+		flowmentum_active = true
+	elif GameManager.momentum < 50 and flowmentum_active:
+		_on_flowmentum_mode_ended()
+		flowmentum_active = false
 	if grabcheckraycast.target_position.x < 0:
 		cur_wallslide_dir = 'left' 
 	else:
@@ -264,7 +277,7 @@ func _physics_process(delta: float) -> void:
 			charge_flash_timer.start(.1)  # Flash lasts for 0.1 seconds
 
 	# Handle charge state reset when jumping or sliding
-	if state == States.JUMPING or state == States.SLIDING or state == States.FALLING or state == States.AIR_DASHING or state == States.CROUCHED :
+	if state == States.JUMPING or state == States.HURT or state == States.SLIDING or state == States.FALLING or state == States.AIR_DASHING or state == States.CROUCHED :
 		if is_charge_attack_ready:
 			attack_button_held = false
 			is_charge_attack_ready = false
@@ -307,7 +320,7 @@ func _physics_process(delta: float) -> void:
 		velocity += get_gravity() * delta
 		
 
-	if Input.is_action_just_pressed("jump") and ( is_on_floor() || state==States.GRABBING) and state != States.SLIDING and state != States.CHARGED:
+	if Input.is_action_just_pressed("jump") and ( is_on_floor() || state==States.GRABBING)  and state!= States.HURT and state != States.CHARGED:
 		num_wall_jumps = 0
 
 		if(dashes_in_air != 0):
@@ -318,8 +331,8 @@ func _physics_process(delta: float) -> void:
 			animated_sprite.play("ledge_pull_up")
 
 		if(!is_obstructed_above()):
-			state = States.IDLE
 			velocity.y = JUMP_VELOCITY
+			state = States.JUMPING
 	
 	if state == States.GRABBING:
 		return
@@ -329,7 +342,7 @@ func _physics_process(delta: float) -> void:
 	var attack_move_speed = 40
 
 	if state != States.ATTACKING:
-		if direction != 0 and not (state in [States.ROLLING, States.SLIDING, States.AIR_DASHING, States.WALL_SLIDE]):
+		if direction != 0 and not (state in [States.ROLLING, States.SLIDING, States.AIR_DASHING, States.WALL_SLIDE, States.HURT]):
 			
 			animated_sprite.flip_h = direction < 0
 			if animated_sprite.flip_h:
@@ -351,7 +364,10 @@ func _physics_process(delta: float) -> void:
 			velocity.x = slide_direction * slide_velocity
 			slide_timer -= delta
 			if slide_timer <= 0:
+		
 				end_slide()
+			can_slide = true
+
 			move_and_slide()
 			return
 			
@@ -374,10 +390,10 @@ func _physics_process(delta: float) -> void:
 				velocity.x = move_toward(velocity.x, 0, SPEED)
 				animated_sprite.play("crouch")
 		else:
-			if direction != 0:
+			if direction != 0 and state!= States.HURT:
 				velocity.x = direction * SPEED
 				if is_on_floor():
-					if state != States.ROLLING and state != States.CHARGED:
+					if state!= States.ATTACKING and state != States.ROLLING and state != States.CHARGED and state!= States.HURT:
 						state = States.RUNNING
 						adjust_sprite_offset()
 						animated_sprite.play("run")
@@ -400,8 +416,9 @@ func _physics_process(delta: float) -> void:
 						roll_reset.start(roll_reset_duration)
 
 			else:
-				velocity.x = move_toward(velocity.x, 0, SPEED)
-				if is_on_floor() and state != States.CROUCHED and state!= States.CHARGED:
+				if(state != States.HURT):
+					velocity.x = move_toward(velocity.x, 0, SPEED)
+				if is_on_floor() and state != States.CROUCHED and state!= States.ATTACKING and state != States.HURT and state!= States.CHARGED:
 					state = States.IDLE
 					adjust_sprite_offset()
 					animated_sprite.play("idle")
@@ -430,7 +447,7 @@ func _physics_process(delta: float) -> void:
 				dash_timer.start(dash_duration)
 
 			# Prevent overriding dash animation while it's active
-			if state != States.AIR_DASHING and state != States.WALL_SLIDE and state != States.CHARGED:
+			if state != States.AIR_DASHING and state!= States.HURT and state != States.WALL_SLIDE and state != States.CHARGED:
 				if velocity.y > 50:
 					state = States.FALLING
 					animated_sprite.play("fall")			
@@ -471,7 +488,7 @@ func _physics_process(delta: float) -> void:
 
 			start_attack(attack_configs[current_attack_name])
 			
-	if Input.is_action_just_pressed("basic_attack") and is_on_floor() and state not in [States.ATTACKING, States.SLIDING, States.ROLLING]:
+	if Input.is_action_just_pressed("basic_attack") and is_on_floor() and state not in [States.ATTACKING, States.SLIDING, States.ROLLING, States.HURT]:
 		attack_button_held = true
 		attack_hold_time = 0.0
 		is_charge_attack_ready = false
@@ -498,7 +515,7 @@ func _physics_process(delta: float) -> void:
 
 		else:
 			# Do basic combo attack if not already attacking
-			if state not in [States.ATTACKING, States.SLIDING, States.ROLLING]:
+			if state not in [States.ATTACKING, States.SLIDING, States.HURT, States.ROLLING]:
 				if attack_type != "basic":
 					current_attack_name = ""
 					attack_type = "basic"
@@ -522,7 +539,6 @@ func _physics_process(delta: float) -> void:
 					start_attack(attack_configs[current_attack_name])
 					combo_reset_timer.start(combo_reset_time_basic)
 	
-
 
 	move_and_slide()
 
@@ -679,17 +695,19 @@ func _on_roll_reset_timeout() -> void:
 	
 
 func _on_flowmentum_mode_started():
-	SPEED *= 1.5
+	SPEED *= 1.2
+	print("flowmentum started!")
 	for attack in attack_configs.values():
 		attack["damage"] *= 1.5
-	$MomentumEffectParticles.emitting = true
+	#$MomentumEffectParticles.emitting = true
 
 func _on_flowmentum_mode_ended():
 	SPEED = 150
+	print("flowmentum ended!")
 	for key in attack_configs.keys():
 		if original_damage.has(key):  # Ensure the key exists in original_damage
 			attack_configs[key]["damage"] = original_damage[key]
-	$MomentumEffectParticles.emitting = false
+	#$MomentumEffectParticles.emitting = false
 	
 
 
@@ -698,3 +716,28 @@ func _on_charge_flash_timer_timeout() -> void:
 		animated_sprite.modulate = Color(2, 2, 2)
 	else:
 		animated_sprite.modulate = Color(1, 1, 1)
+		
+		
+func take_damage(from_direction: Vector2) -> void:
+	print("Damage taken")
+	if is_invincible:
+		return
+
+	state = States.HURT
+	GameManager.add_momentum(-10)
+	GameManager.add_combo_hit(-10)
+	is_invincible = true
+	
+	animated_sprite.play("hurt")
+
+	# Apply knockback (you might want to tweak this further)
+	
+	velocity = Vector2(damage_knockback_force.x * sign(from_direction.x), damage_knockback_force.y)
+
+
+	hit_invincible_timer.start(invincibility_time)
+
+
+func _on_hit_invincible_timer_timeout() -> void:
+	state = States.IDLE
+	is_invincible = false

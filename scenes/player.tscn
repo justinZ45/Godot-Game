@@ -1,4 +1,4 @@
-[gd_scene load_steps=91 format=3 uid="uid://6o55hy0wr55b"]
+[gd_scene load_steps=92 format=3 uid="uid://6o55hy0wr55b"]
 
 [ext_resource type="Script" uid="uid://1lfwyehryqb4" path="res://scripts/player.gd" id="1_onrkg"]
 [ext_resource type="Texture2D" uid="uid://b2u6rc28maq3c" path="res://assets/Adventurer/adventurer-Sheet.png" id="2_qlg0r"]
@@ -190,6 +190,10 @@ region = Rect2(832, 0, 64, 64)
 atlas = ExtResource("3_qlg0r")
 region = Rect2(896, 0, 64, 64)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_vx63k"]
+atlas = ExtResource("2_qlg0r")
+region = Rect2(150, 296, 50, 37)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_ujl30"]
 atlas = ExtResource("2_qlg0r")
 region = Rect2(0, 0, 50, 37)
@@ -329,13 +333,13 @@ animations = [{
 "duration": 0.7,
 "texture": SubResource("AtlasTexture_qfm1y")
 }, {
-"duration": 0.8,
+"duration": 0.7,
 "texture": SubResource("AtlasTexture_fulsm")
 }, {
-"duration": 0.8,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_4r5pv")
 }, {
-"duration": 0.8,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_60mlk")
 }],
 "loop": false,
@@ -506,6 +510,14 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_vx63k")
+}],
+"loop": true,
+"name": &"hurt",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_ujl30")
 }, {
 "duration": 1.0,
@@ -637,7 +649,7 @@ animations = [{
 size = Vector2(20, 45.9879)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qlg0r"]
-size = Vector2(37.5, 54.4688)
+size = Vector2(48.5, 54.4688)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vdulj"]
 atlas = ExtResource("5_qlg0r")
@@ -689,9 +701,7 @@ script = ExtResource("1_onrkg")
 position = Vector2(10, -30)
 scale = Vector2(1.44153, 1.55405)
 sprite_frames = SubResource("SpriteFrames_iywne")
-animation = &"charge_attack"
-frame = 5
-frame_progress = 1.0
+animation = &"basic_attack_1"
 
 [node name="player_hitbox" type="CollisionShape2D" parent="."]
 position = Vector2(8, -26)
@@ -708,7 +718,7 @@ monitoring = false
 script = ExtResource("6_tuyoq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="attack_hitboxes/basic_sword_hitbox"]
-position = Vector2(17.25, 0)
+position = Vector2(22.75, 0)
 shape = SubResource("RectangleShape2D_qlg0r")
 
 [node name="hit_effect_anim" type="AnimatedSprite2D" parent="attack_hitboxes/basic_sword_hitbox"]
@@ -729,6 +739,9 @@ one_shot = true
 one_shot = true
 
 [node name="charge_flash_timer" type="Timer" parent="timers"]
+
+[node name="hit_invincible_timer" type="Timer" parent="timers"]
+one_shot = true
 
 [node name="raycasts" type="Node2D" parent="."]
 
@@ -758,3 +771,4 @@ collision_mask = 8
 [connection signal="timeout" from="timers/roll_reset" to="." method="_on_roll_reset_timeout"]
 [connection signal="timeout" from="timers/comboResetTimer" to="." method="_on_combo_reset_timer_timeout"]
 [connection signal="timeout" from="timers/charge_flash_timer" to="." method="_on_charge_flash_timer_timeout"]
+[connection signal="timeout" from="timers/hit_invincible_timer" to="." method="_on_hit_invincible_timer_timeout"]

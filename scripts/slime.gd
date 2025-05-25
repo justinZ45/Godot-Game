@@ -5,6 +5,7 @@ extends CharacterBody2D
 @onready var healthbar: Control = $healthbar
 @onready var shader_mat := animated_sprite.material as ShaderMaterial
 @onready var slime_hitbox: CollisionShape2D = $slime_hitbox
+@onready var slime_area: Area2D = $slime_area
 
 @export var max_health: int = 15
 var current_health: int = max_health
@@ -13,7 +14,7 @@ var direction: int = -1
 var SPEED: float = 50.0
 
 var BASE_SPEED = 50
-var score = 0
+var momentum = 0
 
 var knockback_velocity: Vector2 = Vector2.ZERO
 var knockback_decay: float = 2000.0  # Higher = faster knockback decay
@@ -29,6 +30,7 @@ var state: States = States.ALIVE
 func _ready():
 	timer.timeout.connect(_on_timer_timeout)
 	healthbar.set_max_health(max_health)
+	slime_area.body_entered.connect(_on_damage_area_body_entered)
 
 func _physics_process(delta: float) -> void:
 	if is_hit:
@@ -68,12 +70,11 @@ func _on_timer_timeout():
 	direction *= -1
 	animated_sprite.flip_h = direction > 0
 
-func take_damage(amount: int, attack_score:int, hit_effect: Dictionary = {},  attacker_position: Vector2 = Vector2.ZERO):
+func take_damage(amount: int, attack_momentum:int, hit_effect: Dictionary = {},  attacker_position: Vector2 = Vector2.ZERO):
 	is_hit = true   # **New:** Set flag to indicate that the character is hit
 	hit_cooldown_timer = hit_effect["enemy_stun"]  # **New:** Start cooldown after hit
 	SPEED = 0  # **New:** Stop movement temporarily during damage
-
-	score = attack_score
+	momentum = attack_momentum
 	current_health -= amount
 	healthbar.set_health(current_health)
 	effect_manager.flash(animated_sprite, Color.WHITE, 0.2)
@@ -88,8 +89,8 @@ func take_damage(amount: int, attack_score:int, hit_effect: Dictionary = {},  at
 			knockback.x = -abs(knockback.x)
 		knockback_velocity = knockback
 		
-	GameManager.add_combo_hit()
-	GameManager.add_score(score)
+	GameManager.add_combo_hit(1)
+	GameManager.add_momentum(momentum)
 
 	if hit_effect.has("hit_stop"):
 		get_tree().paused = true
@@ -100,8 +101,8 @@ func take_damage(amount: int, attack_score:int, hit_effect: Dictionary = {},  at
 		state = States.DEAD
 		velocity = Vector2.ZERO
 		
-		score = 5
-		GameManager.add_score(score)
+		momentum = 5
+		GameManager.add_momentum(momentum)
 
 
 		knockback_velocity = Vector2.ZERO
@@ -110,8 +111,14 @@ func take_damage(amount: int, attack_score:int, hit_effect: Dictionary = {},  at
 
 		die()
 
-func apply_hit(hit_effect: Dictionary, damage: int, attack_score: int, attacker_position: Vector2 = Vector2.ZERO):
-	take_damage(damage, attack_score, hit_effect,  attacker_position)
+func apply_hit(hit_effect: Dictionary, damage: int, attack_momentum: int, attacker_position: Vector2 = Vector2.ZERO):
+	take_damage(damage, attack_momentum, hit_effect,  attacker_position)
 
 func die():
 	queue_free()
+	
+
+func _on_damage_area_body_entered(body: Node2D) -> void:
+	if  body.has_method("take_damage"):
+		var knockback_direction = (body.global_position - global_position).normalized()
+		body.take_damage(knockback_direction)

@@ -1,11 +1,11 @@
 extends Control
 
-@onready var flowmentum_bar: ProgressBar = $flowmentumBar
 
-func _ready():
-	GameManager.score_updated.connect(_on_score_updated)
-	flowmentum_bar.value = GameManager.score
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
 
-func _on_score_updated(new_score: int): 
-	print("Score updated in HUD:", new_score)
-	flowmentum_bar.value = new_score
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass

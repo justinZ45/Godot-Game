@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://dc2j30tet8dg6"]
+[gd_scene load_steps=34 format=3 uid="uid://dc2j30tet8dg6"]
 
 [ext_resource type="Script" uid="uid://cmhw2b1uhiagw" path="res://scripts/slime.gd" id="1_4l1t8"]
 [ext_resource type="Shader" uid="uid://db4hvabtxfyrs" path="res://assets/shaders/white_flash.gdshader" id="2_2npkn"]
@@ -194,6 +194,9 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n6pvg"]
 size = Vector2(31, 28)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fd6lc"]
+size = Vector2(35, 32)
+
 [node name="slime" type="CharacterBody2D"]
 position = Vector2(0, -8)
 collision_layer = 2
@@ -210,6 +213,15 @@ animation = &"idle"
 position = Vector2(1, -7)
 shape = SubResource("RectangleShape2D_n6pvg")
 
+[node name="slime_area" type="Area2D" parent="."]
+position = Vector2(0, -6)
+collision_layer = 2
+collision_mask = 13
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="slime_area"]
+position = Vector2(1, -1)
+shape = SubResource("RectangleShape2D_fd6lc")
+
 [node name="Timer" type="Timer" parent="."]
 wait_time = 1.5
 autostart = true
@@ -221,4 +233,5 @@ offset_right = -11.0
 offset_bottom = -23.0
 rotation = -1.56972
 
+[connection signal="body_entered" from="slime_area" to="." method="_on_damage_area_body_entered"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

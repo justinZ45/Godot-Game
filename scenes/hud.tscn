@@ -1,19 +1,20 @@
-[gd_scene load_steps=4 format=3 uid="uid://c38tgrptq35be"]
+[gd_scene load_steps=5 format=3 uid="uid://c38tgrptq35be"]
 
-[ext_resource type="Script" uid="uid://c2vq8t1xqvhu" path="res://scripts/score_ui.gd" id="1_ahhtf"]
+[ext_resource type="Script" uid="uid://c2vq8t1xqvhu" path="res://scripts/momentum_ui.gd" id="1_ahhtf"]
 [ext_resource type="Script" uid="uid://du5lpa4rqklai" path="res://scripts/timer_ui.gd" id="2_oo0fn"]
-[ext_resource type="Script" uid="uid://qbiibavychop" path="res://scripts/control.gd" id="3_5ysmq"]
+[ext_resource type="Script" uid="uid://qbiibavychop" path="res://scripts/combo_ui.gd" id="3_5ysmq"]
+[ext_resource type="Script" uid="uid://djohsf6y2hut2" path="res://scripts/score_ui.gd" id="4_6fi6k"]
 
 [node name="hud" type="CanvasLayer"]
 
-[node name="ScoreUI" type="Control" parent="."]
+[node name="MomentumUI" type="Control" parent="."]
 layout_mode = 3
 anchor_right = 0.058
 anchor_bottom = 0.023
 offset_bottom = 18.0
 script = ExtResource("1_ahhtf")
 
-[node name="flowmentumBar" type="ProgressBar" parent="ScoreUI"]
+[node name="momentumBar" type="ProgressBar" parent="MomentumUI"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.698
@@ -25,6 +26,7 @@ offset_top = -3.717
 offset_right = 0.0219727
 offset_bottom = -0.0210114
 theme_override_font_sizes/font_size = 40
+max_value = 50.0
 step = 1.0
 show_percentage = false
 
@@ -64,8 +66,42 @@ grow_horizontal = 0
 script = ExtResource("3_5ysmq")
 
 [node name="combo_timer" type="Timer" parent="ComboUI"]
+one_shot = true
 
 [node name="combo_label" type="Label" parent="ComboUI"]
+layout_mode = 0
+offset_left = 888.0
+offset_top = 1.0
+offset_right = 1152.0
+offset_bottom = 79.0
+theme_override_colors/font_color = Color(0.501961, 0.235294, 0, 1)
+theme_override_font_sizes/font_size = 100
+
+[node name="timer_bar" type="ProgressBar" parent="ComboUI"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -246.0
+offset_top = 48.096
+offset_right = -70.0
+offset_bottom = 75.096
+grow_horizontal = 0
+max_value = 2.0
+show_percentage = false
+
+[node name="ScoreUI" type="Control" parent="."]
+layout_mode = 3
+anchor_left = 0.483
+anchor_top = 0.023
+anchor_right = 1.0
+anchor_bottom = 0.117
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+script = ExtResource("4_6fi6k")
+
+[node name="score_label" type="Label" parent="ScoreUI"]
 layout_mode = 0
 offset_left = 888.0
 offset_top = 1.0

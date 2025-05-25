@@ -18,7 +18,7 @@ func _on_body_entered(body):
 	if current_attack == null:
 		return
 
-	if body.has_method("apply_hit") and body.state != body.States.DEAD:
+	if body.has_method("apply_hit") and body.state != body.States.DEAD and player_ref.state == player_ref.States.ATTACKING:
 		var hit_effect = current_attack.get("hit_effect", {})
 		var attack_score = current_attack.get("attack_score", 1)
 		var damage = current_attack.get ("damage", {})
