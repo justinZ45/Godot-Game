@@ -19,6 +19,7 @@ var is_invulnerable: bool = false
 var is_invincible = false
 var flowmentum_active = false
 
+@onready var jump: AudioStreamPlayer2D = $audio/jump
 
 @onready var animation_player = $AnimationPlayer
 @onready var hit_invincible_timer: Timer = $timers/hit_invincible_timer
@@ -117,11 +118,11 @@ var attack_configs = {
 		"hitbox_off": 5,
 		"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
 		"next": "basic_attack_2",
-		"move_speed": 20,
+		"move_speed": 10,
 		"attack_momentum": 2,  
 		"damage": 2,
 		"hit_effect": {
-			"knockback": Vector2(170, 0),
+			"knockback": Vector2(170, 400),
 			"hit_stop": 0.07,
 			"enemy_stun":  1.0
 		}
@@ -132,11 +133,11 @@ var attack_configs = {
 		"hitbox_off": 3,
 		"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
 		"next": "basic_attack_3",
-		"move_speed": 20,  
+		"move_speed": 10,  
 		"attack_momentum": 2,
 		"damage": 3,
 		"hit_effect": {
-			"knockback": Vector2(170, 0),
+			"knockback": Vector2(170, 400),
 			"hit_stop": 0.07,
 			"enemy_stun": 1.0
 		}
@@ -146,7 +147,7 @@ var attack_configs = {
 		"hitbox_on": 2,
 		"hitbox_off": 4,
 		"hitbox_node": "attack_hitboxes/basic_sword_hitbox",
-		"move_speed": 40,  
+		"move_speed": 30,  
 		"attack_momentum": 3,
 		"damage": 5,
 		"hit_effect": {
@@ -298,8 +299,9 @@ func _physics_process(delta: float) -> void:
 			velocity += get_gravity() * delta
 
 
-		if Input.is_action_just_pressed("jump"):
+		if Input.is_action_just_pressed("jump") and state != States.JUMPING:
 			state = States.JUMPING
+			jump.play()
 			velocity.y = JUMP_VELOCITY
 			num_wall_jumps +=1
 			
@@ -308,7 +310,7 @@ func _physics_process(delta: float) -> void:
 		else:
 			animated_sprite.flip_h = true
 			
-		if(grabcheckraycast.is_colliding() && grabhandraycast.is_colliding() && !wallslideraycast.is_colliding()):
+		if(!wallslideraycast.is_colliding()):
 			state = States.FALLING
 
 		animated_sprite.play("wall_slide")  # Play the wall slide animation
@@ -330,7 +332,7 @@ func _physics_process(delta: float) -> void:
 		if state == States.GRABBING:
 			animated_sprite.play("ledge_pull_up")
 
-		if(!is_obstructed_above()):
+		if(!is_obstructed_above() and state!= States.JUMPING):
 			velocity.y = JUMP_VELOCITY
 			state = States.JUMPING
 	
@@ -390,7 +392,7 @@ func _physics_process(delta: float) -> void:
 				velocity.x = move_toward(velocity.x, 0, SPEED)
 				animated_sprite.play("crouch")
 		else:
-			if direction != 0 and state!= States.HURT:
+			if direction != 0 and state!= States.HURT and state!= States.ATTACKING:
 				velocity.x = direction * SPEED
 				if is_on_floor():
 					if state!= States.ATTACKING and state != States.ROLLING and state != States.CHARGED and state!= States.HURT:
@@ -450,11 +452,12 @@ func _physics_process(delta: float) -> void:
 			if state != States.AIR_DASHING and state!= States.HURT and state != States.WALL_SLIDE and state != States.CHARGED:
 				if velocity.y > 50:
 					state = States.FALLING
-					animated_sprite.play("fall")			
-				else:
+					animated_sprite.play("fall")
+				elif state != States.JUMPING:
 					collision_shape.shape = original_shape
 					state = States.JUMPING
 					animated_sprite.play("jump")
+					jump.play()
 		
 		
 		
@@ -521,6 +524,7 @@ func _physics_process(delta: float) -> void:
 					attack_type = "basic"
 
 					attack_move_speed = current_attack_config.get("move_speed", 40)
+
 				if direction != 0:
 					velocity.x = direction * attack_move_speed
 				else:
@@ -538,6 +542,8 @@ func _physics_process(delta: float) -> void:
 				if current_attack_name in attack_configs:
 					start_attack(attack_configs[current_attack_name])
 					combo_reset_timer.start(combo_reset_time_basic)
+					velocity.x = direction * attack_move_speed
+
 	
 
 	move_and_slide()
@@ -578,6 +584,7 @@ func _on_animated_sprite_2d_animation_finished() -> void:
 		finish_attack()
 
 func get_current_attack_config() -> Dictionary:
+	
 	return current_attack_config
 
 func start_slide(dir: int):
@@ -632,6 +639,7 @@ func is_obstructed_above() -> bool:
 
 func _on_combo_reset_timer_timeout() -> void:
 	current_attack_name = ""
+	state = States.IDLE
 	print("combo timeout")
 	
 

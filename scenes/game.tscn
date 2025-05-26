@@ -818,6 +818,9 @@ position = Vector2(209, -40)
 
 [node name="platforms" type="Node" parent="TileMap"]
 
+[node name="slime2" parent="TileMap" instance=ExtResource("6_p57ef")]
+position = Vector2(-380, -17)
+
 [node name="slime" parent="TileMap" instance=ExtResource("6_p57ef")]
 position = Vector2(130, -11)
 

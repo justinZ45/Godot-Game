@@ -1,9 +1,10 @@
-[gd_scene load_steps=92 format=3 uid="uid://6o55hy0wr55b"]
+[gd_scene load_steps=93 format=3 uid="uid://6o55hy0wr55b"]
 
 [ext_resource type="Script" uid="uid://1lfwyehryqb4" path="res://scripts/player.gd" id="1_onrkg"]
 [ext_resource type="Texture2D" uid="uid://b2u6rc28maq3c" path="res://assets/Adventurer/adventurer-Sheet.png" id="2_qlg0r"]
 [ext_resource type="Texture2D" uid="uid://cvo10hokyy8hf" path="res://assets/sprites/Legacy-Fantasy - High Forest 2.3/Character/Jumlp-All/Jump-All-Sheet.png" id="3_qlg0r"]
 [ext_resource type="Texture2D" uid="uid://dieih4hycr562" path="res://assets/sprites/Legacy Collection/Assets/Misc/Hit/hit.png" id="5_qlg0r"]
+[ext_resource type="AudioStream" uid="uid://boltqwo4gj2bq" path="res://assets/audio/DSGNMisc_MOVEMENT-Retro Jump_HY_PC-003.wav" id="6_fjrip"]
 [ext_resource type="Script" uid="uid://cxs5jwo5ouxhc" path="res://scripts/basic_sword_hitbox.gd" id="6_tuyoq"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tuyoq"]
@@ -321,19 +322,19 @@ region = Rect2(50, 370, 50, 37)
 [sub_resource type="SpriteFrames" id="SpriteFrames_iywne"]
 animations = [{
 "frames": [{
-"duration": 0.7,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_tuyoq")
 }, {
-"duration": 0.7,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_fjrip")
 }, {
-"duration": 0.7,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_smehm")
 }, {
 "duration": 0.7,
 "texture": SubResource("AtlasTexture_qfm1y")
 }, {
-"duration": 0.7,
+"duration": 0.6,
 "texture": SubResource("AtlasTexture_fulsm")
 }, {
 "duration": 0.5,
@@ -347,16 +348,16 @@ animations = [{
 "speed": 12.0
 }, {
 "frames": [{
-"duration": 0.7,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_dqkch")
 }, {
 "duration": 0.7,
 "texture": SubResource("AtlasTexture_ur7pv")
 }, {
-"duration": 0.7,
+"duration": 0.6,
 "texture": SubResource("AtlasTexture_y4r1p")
 }, {
-"duration": 0.7,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_d2wvv")
 }],
 "loop": false,
@@ -364,7 +365,7 @@ animations = [{
 "speed": 9.0
 }, {
 "frames": [{
-"duration": 0.7,
+"duration": 0.5,
 "texture": SubResource("AtlasTexture_3v2ag")
 }, {
 "duration": 0.7,
@@ -649,7 +650,7 @@ animations = [{
 size = Vector2(20, 45.9879)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qlg0r"]
-size = Vector2(48.5, 54.4688)
+size = Vector2(46.5, 54.4688)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vdulj"]
 atlas = ExtResource("5_qlg0r")
@@ -701,7 +702,7 @@ script = ExtResource("1_onrkg")
 position = Vector2(10, -30)
 scale = Vector2(1.44153, 1.55405)
 sprite_frames = SubResource("SpriteFrames_iywne")
-animation = &"basic_attack_1"
+animation = &"basic_attack_2"
 
 [node name="player_hitbox" type="CollisionShape2D" parent="."]
 position = Vector2(8, -26)
@@ -718,7 +719,7 @@ monitoring = false
 script = ExtResource("6_tuyoq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="attack_hitboxes/basic_sword_hitbox"]
-position = Vector2(22.75, 0)
+position = Vector2(21.75, 0)
 shape = SubResource("RectangleShape2D_qlg0r")
 
 [node name="hit_effect_anim" type="AnimatedSprite2D" parent="attack_hitboxes/basic_sword_hitbox"]
@@ -764,6 +765,12 @@ collision_mask = 8
 position = Vector2(9, -29)
 target_position = Vector2(14, 1)
 collision_mask = 8
+
+[node name="audio" type="Node" parent="."]
+
+[node name="jump" type="AudioStreamPlayer2D" parent="audio"]
+stream = ExtResource("6_fjrip")
+bus = &"SFX"
 
 [connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
 [connection signal="animation_finished" from="attack_hitboxes/basic_sword_hitbox/hit_effect_anim" to="attack_hitboxes/basic_sword_hitbox" method="_on_hit_effect_anim_animation_finished"]

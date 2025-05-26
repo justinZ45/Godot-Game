@@ -6,9 +6,15 @@ extends CharacterBody2D
 @onready var shader_mat := animated_sprite.material as ShaderMaterial
 @onready var slime_hitbox: CollisionShape2D = $slime_hitbox
 @onready var slime_area: Area2D = $slime_area
+@onready var hit_noise_basic_1: AudioStreamPlayer2D = $audio/hit_noise_basic_1
+@onready var hit_noise_basic_2: AudioStreamPlayer2D = $audio/hit_noise_basic_2
+@onready var hit_noise_basic_3: AudioStreamPlayer2D = $audio/hit_noise_basic_3
+
+
 
 @export var max_health: int = 15
 var current_health: int = max_health
+const GROUND_LAYER_BIT = 1 << 3
 
 var direction: int = -1
 var SPEED: float = 50.0
@@ -70,7 +76,7 @@ func _on_timer_timeout():
 	direction *= -1
 	animated_sprite.flip_h = direction > 0
 
-func take_damage(amount: int, attack_momentum:int, hit_effect: Dictionary = {},  attacker_position: Vector2 = Vector2.ZERO):
+func take_damage(amount: int, attack_momentum:int, attack_type: String,  hit_effect: Dictionary = {},  attacker_position: Vector2 = Vector2.ZERO):
 	is_hit = true   # **New:** Set flag to indicate that the character is hit
 	hit_cooldown_timer = hit_effect["enemy_stun"]  # **New:** Start cooldown after hit
 	SPEED = 0  # **New:** Stop movement temporarily during damage
@@ -91,6 +97,14 @@ func take_damage(amount: int, attack_momentum:int, hit_effect: Dictionary = {}, 
 		
 	GameManager.add_combo_hit(1)
 	GameManager.add_momentum(momentum)
+	
+	if attack_type == 'basic_attack_1':
+		hit_noise_basic_1.play()
+	elif attack_type == 'basic_attack_2':
+		hit_noise_basic_2.play()
+	elif attack_type == 'basic_attack_3':
+		hit_noise_basic_3.play()
+		
 
 	if hit_effect.has("hit_stop"):
 		get_tree().paused = true
@@ -106,13 +120,16 @@ func take_damage(amount: int, attack_momentum:int, hit_effect: Dictionary = {}, 
 
 
 		knockback_velocity = Vector2.ZERO
+		slime_area.collision_mask = 0
+		collision_mask = GROUND_LAYER_BIT  # usually 1 << 3
+		collision_layer = 0
 		animated_sprite.play("death")
 		await animated_sprite.animation_finished
 
 		die()
 
-func apply_hit(hit_effect: Dictionary, damage: int, attack_momentum: int, attacker_position: Vector2 = Vector2.ZERO):
-	take_damage(damage, attack_momentum, hit_effect,  attacker_position)
+func apply_hit(hit_effect: Dictionary, damage: int, attack_type: String, attack_momentum: int, attacker_position: Vector2 = Vector2.ZERO):
+	take_damage(damage, attack_momentum, attack_type, hit_effect,  attacker_position)
 
 func die():
 	queue_free()

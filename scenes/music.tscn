@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://5doi0ief2mhk"]
+
+[ext_resource type="AudioStream" uid="uid://dew2e1ksvb2b1" path="res://assets/audio/SuperHero_original.ogg" id="1_05ggv"]
+
+[node name="Music" type="AudioStreamPlayer2D"]
+stream = ExtResource("1_05ggv")
+bus = &"Music"

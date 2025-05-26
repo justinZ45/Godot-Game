@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://dc2j30tet8dg6"]
+[gd_scene load_steps=38 format=3 uid="uid://dc2j30tet8dg6"]
 
 [ext_resource type="Script" uid="uid://cmhw2b1uhiagw" path="res://scripts/slime.gd" id="1_4l1t8"]
 [ext_resource type="Shader" uid="uid://db4hvabtxfyrs" path="res://assets/shaders/white_flash.gdshader" id="2_2npkn"]
@@ -6,6 +6,10 @@
 [ext_resource type="Texture2D" uid="uid://b3gey2xxbplfd" path="res://assets/sprites/Sunny Land Collection Files/Assets/Characters/Enemies and NPC/Slimer/Spritesheets/slimer-idle.png" id="3_jayke"]
 [ext_resource type="Texture2D" uid="uid://b8cbsp50sv2l2" path="res://assets/sprites/Legacy Collection/Assets/Misc/EnemyDeath/spritesheet.png" id="4_fd6lc"]
 [ext_resource type="PackedScene" uid="uid://bvcosn5e0tjb3" path="res://scenes/healthbar.tscn" id="4_pjw23"]
+[ext_resource type="PackedScene" uid="uid://5doi0ief2mhk" path="res://scenes/music.tscn" id="7_gstla"]
+[ext_resource type="AudioStream" uid="uid://cflcdafh5k3j" path="res://assets/audio/DSGNTonl_MELEE-Sword Critical_HY_PC-004.wav" id="8_0l8pv"]
+[ext_resource type="AudioStream" uid="uid://cfl4cq2p2jfo6" path="res://assets/audio/FGHTImpt_MELEE-Swish Hit_HY_PC-002.wav" id="8_v5wyi"]
+[ext_resource type="AudioStream" uid="uid://ctmlh6tu64npo" path="res://assets/audio/FGHTImpt_MELEE-Swish Hit_HY_PC-006.wav" id="9_vnioy"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fd6lc"]
 shader = ExtResource("2_2npkn")
@@ -232,6 +236,25 @@ offset_top = -23.0
 offset_right = -11.0
 offset_bottom = -23.0
 rotation = -1.56972
+
+[node name="audio" type="Node" parent="."]
+
+[node name="hit_noise_basic_3" parent="audio" instance=ExtResource("7_gstla")]
+position = Vector2(0, -16)
+stream = ExtResource("8_0l8pv")
+bus = &"SFX"
+
+[node name="hit_noise_basic_2" parent="audio" instance=ExtResource("7_gstla")]
+position = Vector2(0, -16)
+stream = ExtResource("9_vnioy")
+bus = &"SFX"
+
+[node name="death_noise" type="AudioStreamPlayer2D" parent="audio"]
+
+[node name="hit_noise_basic_1" parent="audio" instance=ExtResource("7_gstla")]
+position = Vector2(0, -8)
+stream = ExtResource("8_v5wyi")
+bus = &"SFX"
 
 [connection signal="body_entered" from="slime_area" to="." method="_on_damage_area_body_entered"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
