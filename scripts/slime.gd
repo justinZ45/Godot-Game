@@ -9,6 +9,7 @@ extends CharacterBody2D
 @onready var hit_noise_basic_1: AudioStreamPlayer2D = $audio/hit_noise_basic_1
 @onready var hit_noise_basic_2: AudioStreamPlayer2D = $audio/hit_noise_basic_2
 @onready var hit_noise_basic_3: AudioStreamPlayer2D = $audio/hit_noise_basic_3
+@onready var hit_noise_charge: AudioStreamPlayer2D = $audio/hit_noise_charge
 
 
 
@@ -98,18 +99,22 @@ func take_damage(amount: int, attack_momentum:int, attack_type: String,  hit_eff
 	GameManager.add_combo_hit(1)
 	GameManager.add_momentum(momentum)
 	
-	if attack_type == 'basic_attack_1':
-		hit_noise_basic_1.play()
-	elif attack_type == 'basic_attack_2':
-		hit_noise_basic_2.play()
-	elif attack_type == 'basic_attack_3':
-		hit_noise_basic_3.play()
 		
 
 	if hit_effect.has("hit_stop"):
 		get_tree().paused = true
 		await get_tree().create_timer(hit_effect["hit_stop"]).timeout
 		get_tree().paused = false
+		
+	if attack_type == 'basic_attack_1' or attack_type =='slide':
+		hit_noise_basic_1.play()
+	elif attack_type == 'basic_attack_2':
+		hit_noise_basic_2.play()
+	elif attack_type == 'basic_attack_3':
+		hit_noise_basic_3.play()
+	elif attack_type == 'charge_attack':
+		hit_noise_charge.pitch_scale = 1.7
+		hit_noise_charge.play()
 
 	if current_health <= 0:
 		state = States.DEAD

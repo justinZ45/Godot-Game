@@ -20,6 +20,11 @@ var is_invincible = false
 var flowmentum_active = false
 
 @onready var jump: AudioStreamPlayer2D = $audio/jump
+@onready var simple_swoosh: AudioStreamPlayer2D = $audio/simple_swoosh
+@onready var run_grass: AudioStreamPlayer2D = $audio/run_grass
+@onready var dash: AudioStreamPlayer2D = $audio/dash
+@onready var charge: AudioStreamPlayer2D = $audio/charge
+@onready var hurt: AudioStreamPlayer2D = $audio/hurt
 
 @onready var animation_player = $AnimationPlayer
 @onready var hit_invincible_timer: Timer = $timers/hit_invincible_timer
@@ -250,6 +255,7 @@ func _physics_process(delta: float) -> void:
 			state = States.WALL_SLIDE  # Set to sliding state if you want
 			can_dash = true
 			
+			
 		elif original_wallslide_dir != cur_wallslide_dir:
 			if grabcheckraycast.target_position.x < 0:
 				original_wallslide_dir = 'left' 
@@ -267,6 +273,8 @@ func _physics_process(delta: float) -> void:
 		
 		if attack_hold_time >= CHARGE_ATTACK_THRESHOLD and not is_charge_attack_ready:
 			is_charge_attack_ready = true
+			charge.pitch_scale = 1.7
+			charge.play()
 			print("charged")
 			# Change color to white (bright flash effect)
 			
@@ -301,6 +309,7 @@ func _physics_process(delta: float) -> void:
 
 		if Input.is_action_just_pressed("jump") and state != States.JUMPING:
 			state = States.JUMPING
+			jump.pitch_scale = 1.8
 			jump.play()
 			velocity.y = JUMP_VELOCITY
 			num_wall_jumps +=1
@@ -360,9 +369,15 @@ func _physics_process(delta: float) -> void:
 				grabhandraycast.target_position.x = abs(grabhandraycast.target_position.x)
 				wallslideraycast.target_position.x = abs(wallslideraycast.target_position.x)
 
-
+		if state == States.ROLLING or state == States.AIR_DASHING:
+			if not dash.playing:
+				dash.pitch_scale = randf_range(1.6, 1.8)
+				dash.play()
 
 		if state == States.SLIDING:
+			if not dash.playing:
+				dash.pitch_scale = .4
+				dash.play()
 			velocity.x = slide_direction * slide_velocity
 			slide_timer -= delta
 			if slide_timer <= 0:
@@ -397,6 +412,9 @@ func _physics_process(delta: float) -> void:
 				if is_on_floor():
 					if state!= States.ATTACKING and state != States.ROLLING and state != States.CHARGED and state!= States.HURT:
 						state = States.RUNNING
+						if not run_grass.playing:
+							simple_swoosh.pitch_scale = randf_range(0.4, 1.8)
+							run_grass.play()
 						adjust_sprite_offset()
 						animated_sprite.play("run")
 					
@@ -440,6 +458,9 @@ func _physics_process(delta: float) -> void:
 					dash_direction = -1 if animated_sprite.flip_h else 1
 				can_dash = false
 				state = States.AIR_DASHING
+				if not dash.playing:
+					dash.pitch_scale = randf_range(0.4, 1.8)
+					dash.play()
 				dashes_in_air += 1
 				velocity.y = dash_gravity_reduction
 				SPEED = BASESPEED + DASHSPEED
@@ -457,6 +478,7 @@ func _physics_process(delta: float) -> void:
 					collision_shape.shape = original_shape
 					state = States.JUMPING
 					animated_sprite.play("jump")
+					jump.pitch_scale = 1.8
 					jump.play()
 		
 		
@@ -561,6 +583,9 @@ func _process(delta: float) -> void:
 
 		
 func start_attack(config: Dictionary):
+	if attack_type in ["basic", "aerial"]:
+		simple_swoosh.pitch_scale = randf_range(0.5, 1.5)
+		simple_swoosh.play()
 	if attack_type != "slide":
 		state = States.ATTACKING
 	current_attack_config = config
@@ -728,10 +753,13 @@ func _on_charge_flash_timer_timeout() -> void:
 		
 func take_damage(from_direction: Vector2) -> void:
 	print("Damage taken")
+	
 	if is_invincible:
 		return
 
 	state = States.HURT
+	hurt.pitch_scale = 2.8
+	hurt.play()
 	GameManager.add_momentum(-10)
 	GameManager.add_combo_hit(-10)
 	is_invincible = true

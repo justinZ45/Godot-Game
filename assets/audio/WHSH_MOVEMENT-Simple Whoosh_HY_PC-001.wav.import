@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cp4vdufnfqumv"
+path="res://.godot/imported/WHSH_MOVEMENT-Simple Whoosh_HY_PC-001.wav-11afd8c668c9c7101af4f190b5132212.sample"
+
+[deps]
+
+source_file="res://assets/audio/WHSH_MOVEMENT-Simple Whoosh_HY_PC-001.wav"
+dest_files=["res://.godot/imported/WHSH_MOVEMENT-Simple Whoosh_HY_PC-001.wav-11afd8c668c9c7101af4f190b5132212.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2
