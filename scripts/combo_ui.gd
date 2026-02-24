@@ -2,7 +2,7 @@ extends Control
 
 var combo_active = false
 @onready var combo_timer: Timer = $combo_timer
-@onready var combo_label: Label = $combo_label
+@onready var combo_label: Label = $combo_label 
 @onready var momentum_bar: ProgressBar = $"../MomentumUI/momentumBar"
 @onready var timer_bar: ProgressBar = $timer_bar
 
